@@ -1,13 +1,13 @@
 <html>
 	<head>
-		<title>Temperature v9</title>
+		<title>Temperature v10</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
 		<script>
 			$(document).ready(function(){
 
 				setInterval(() => {
-					outsideTemp = $.ajax({url:"https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",async:false,cache:false})['main']["temp"] - 273.15
+					outsideTemp = $.ajax({url:"https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",async:false,cache:false})["responseJSON"]['main']["temp"] - 273.15
 					$('#temp2').text(outsideTemp)
 					
 					roomTemp = $.ajax({ url: "https://gastralgic-wildebeest-0107.dataplicity.io/", async: false, cache: false })["responseJSON"]["celsius"]

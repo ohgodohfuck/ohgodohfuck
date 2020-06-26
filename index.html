@@ -1,13 +1,18 @@
 <html>
 	<head>
-		<title>Temperature v2</title>
+		<title>Temperature v3</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
 		<script>
 			$(document).ready(function(){
 
 				setInterval(() => {
-					test = $.getJSON("https://gastralgic-wildebeest-0107.dataplicity.io?callback=?");
+					test = $.ajax({
+						url: "https://gastralgic-wildebeest-0107.dataplicity.io",
+						dataType: 'json',
+						cache: false,
+						async: false
+					});
 					$('#temp1').text(test['celsius']);
 				}, 500);
 

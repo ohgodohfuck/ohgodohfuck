@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<title>Temperature v1</title>
+		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+			crossorigin="anonymous"></script>
+		<script>
+			$(document).ready(function(){
+
+				setInterval(() => {
+					test = $.getJSON("https://gastralgic-wildebeest-0107.dataplicity.io/");
+					$('#temp1').text(test['celsius']);
+				}, 500);
+
+			});
+		</script>
+	</head>
+	<body>
+		<div id="temp1"></div>
+		<div id="temp2"></div>
+	</body>
+</html>

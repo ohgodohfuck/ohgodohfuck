@@ -1,12 +1,24 @@
 <html>
 	<head>
-		<title>Temperature v7</title>
+		<title>Temperature v8</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
+		<script>
+			$(document).ready(function(){
+
+				setInterval(() => {
+					outsideTemp = $.ajax({url:"http://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",async:false,cache:false})['main']["temp"] - 273.15
+					$('#temp2').text(outsideTemp)
+					
+					roomTemp = $.ajax({ url: "https://gastralgic-wildebeest-0107.dataplicity.io/", async: false, cache: false })["responseJSON"]["celsius"]
+					$('#temp1').text(roomTemp)
+				}, 5000);
+
+			});
+		</script>
 	</head>
 	<body>
-		<input type="text" id="testbox" style="display: block;" width="1000px" height="500px">
-		<button onclick="eval($('#testbox').val())">submit</button>
-		<div id="output"></div>
+		<div id="temp1"></div>
+		<div id="temp2"></div>
 	</body>
 </html>

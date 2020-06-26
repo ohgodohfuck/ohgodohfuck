@@ -8,7 +8,7 @@
 
 				setInterval(() => {
 					outsideTemp = $.ajax({url:"https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",async:false,cache:false})["responseJSON"]['main']["temp"] - 273.15
-					$('#temp2').text(outsideTemp)
+					$('#temp2').text(outsideTemp.toFixed(1))
 					
 					roomTemp = $.ajax({ url: "https://gastralgic-wildebeest-0107.dataplicity.io/", async: false, cache: false })["responseJSON"]["celsius"]
 					$('#temp1').text(roomTemp)

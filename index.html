@@ -1,17 +1,41 @@
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>Temperature v10</title>
+		<meta charset="UTF-8">
+		<title>Temperature v11</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
 		<script>
+			function drawLine(temp,canvas){
+				can = $(`#canvas${canvas}`)
+
+				percent = 1 / 20 * temp - 0.5;
+
+				t = (Math.abs(percent - 1)) * Math.PI
+				x = Math.cos(t) * 100 + 100
+				y = Math.sin(t) * -100 + 100
+
+				line = `<line x1='100' y1='100' x2='${x}' y2='${y}' style="stroke:black;stroke-width:2" ></line>`
+
+				can.html(line)
+
+				//c.moveTo(100,100);
+				//c.lineTo(x,y);
+				//c.stroke();
+			};
+		
 			$(document).ready(function(){
+				//canvas = document.getElementById("canvas");
+				//c = canvas.getContext('2d');
 
 				setInterval(() => {
 					outsideTemp = $.ajax({url:"https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",async:false,cache:false})["responseJSON"]['main']["temp"] - 273.15
 					$('#temp2').text(outsideTemp.toFixed(1))
+					drawLine(outsideTemp.toFixed(1),1)
 					
 					roomTemp = $.ajax({ url: "https://gastralgic-wildebeest-0107.dataplicity.io/", async: false, cache: false })["responseJSON"]["celsius"]
 					$('#temp1').text(roomTemp)
+					drawLine(roomTemp.toFixed(1),2)
 				}, 5000);
 
 			});
@@ -20,5 +44,7 @@
 	<body>
 		<div id="temp1"></div>
 		<div id="temp2"></div>
+		<svg id="canvas1" width='200' height="100" style='border: 1px solid red;'></svg>
+		<svg id="canvas2" width='200' height="100" style='border: 1px solid red;'></svg>
 	</body>
 </html>

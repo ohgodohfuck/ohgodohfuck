@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Temperature v11</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Temperature v12</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
 		<script>
@@ -15,15 +16,22 @@
 				x = Math.cos(t) * 100 + 100
 				y = Math.sin(t) * -100 + 100
 
-				line = `<line x1='100' y1='100' x2='${x}' y2='${y}' style="stroke:black;stroke-width:2" ></line>`
+				//line = `<line x1='100' y1='100' x2='${x}' y2='${y}' style="stroke:black;stroke-width:2" ></line>`
+				
 				if (percent > 0.5) {
-					poly = `<polygon points="0,0,200,0,${x},${y},100,100,0,100" style="stroke:black;stroke-width:2; fill: red;"></polygon>`
+					poly = `<polygon points="0,0,200,0,${x},${y},100,100,0,100" style="fill: red;"></polygon>`
 					
 				} else {
 					poly = `<polygon points="0,0,${x},${y},100,100,0,100" style="fill: red;"></polygon>`
 				}
 
-				can.html(line.concat(poly))
+				circle1 = '<circle cx="100" cy="100" r="125" style="stroke:#2a2a2a;stroke-width:50;" fill="transparent"/>'
+				circle2 = '<circle cx="100" cy="100" r="25" style="stroke:#2a2a2a;stroke-width:75;" fill="transparent"/>'
+				text = `<text x="100" y="90" style="font-family: Helvetica; font-size: 25pt; text-anchor: middle; font-weight: bold;" fill="white">${temp}</text>`
+				poly2 = '<rect x=0 y=99 width=200 height=2 fill="#2a2a2a"/>'
+
+				can.html(poly.concat(circle1,circle2,poly2,text))
+				can.css({'background':'white'});
 
 			};
 		
@@ -31,21 +39,56 @@
 
 				setInterval(() => {
 					outsideTemp = $.ajax({url:"https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",async:false,cache:false})["responseJSON"]['main']["temp"] - 273.15
-					$('#temp2').text(outsideTemp.toFixed(1))
 					drawLine(outsideTemp.toFixed(1),1)
 					
 					roomTemp = $.ajax({ url: "https://gastralgic-wildebeest-0107.dataplicity.io/", async: false, cache: false })["responseJSON"]["celsius"]
-					$('#temp1').text(roomTemp)
 					drawLine(roomTemp.toFixed(1),2)
 				}, 5000);
 
 			});
 		</script>
+		<style>
+			body{
+				background-color: #101214;
+			}
+
+			html,body,div{
+			    min-height: 95%;
+				height: 99%;
+				overflow: hidden;
+			}
+			
+			svg{
+				display:block;
+				margin: 10px;
+			}
+
+			.maincont{
+				display:flex;
+				justify-content:center;
+				align-items:center;
+				vertical-align: middle;
+			}
+
+			@media only screen and (max-width: 1000px) {
+				svg{
+					display: inline-block;
+					width: 80%;
+					margin-top: 100px;
+				}
+
+				.maincont{
+					display: block;
+				}
+			}
+		</style>
 	</head>
 	<body>
-		<div id="temp1"></div>
-		<div id="temp2"></div>
-		<svg id="canvas1" width='200' height="100" style='border: 1px solid red;'></svg>
-		<svg id="canvas2" width='200' height="100" style='border: 1px solid red;'></svg>
+		<div height="100%">
+			<div class="maincont">
+				<svg id="canvas1" viewBox="0 0 200 100" width='40%' style='border: 25px solid #2a2a2a; background: #2a2a2a;'></svg>
+				<svg id="canvas2" viewBox="0 0 200 100" width='40%' style='border: 25px solid #2a2a2a; background: #2a2a2a;'></svg>
+			</div>
+		</div>
 	</body>
 </html>

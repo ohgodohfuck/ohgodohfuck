@@ -1,149 +1,164 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Temperature v18</title>
-		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-			crossorigin="anonymous"></script>
-		<script>
-			function col(percent) {
-                if(percent > 0.5){
-                    red = 255
-                    green = percent * -510 + 510
-                }
-                if(percent < 0.5){
-                    red = Math.abs(percent - 1) * -510 + 510
-                    green = 255
-                    
-                }
-                if(percent == 0.5){
-                    red = 255
-                    green = 255
-                }
-                blue = 0
-    
-                return `rgb(${red},${green},${blue});`
-            }
 
-			function drawLine(temp,canvas){
-				can = $(`#canvas${canvas}`)
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Temperature v19</title>
+	<script src="https://code.jquery.com/jquery-3.5.1.js"
+		integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+	<script>
+		function col(percent) {
+			if (percent > 0.5) {
+				red = 255
+				green = percent * -510 + 510
+			}
+			if (percent < 0.5) {
+				red = Math.abs(percent - 1) * -510 + 510
+				green = 255
 
-                if(canvas != 3){
-				    percent = 1 / 20 * temp - 0.5;
-                }else{
-                    percent = 0.1 * temp + 0.5;
-                    if(percent > 1){
-                        percent = 1
-                    }
-                    if(percent < 0){
-                        percent = 0
-                    }
-                }
+			}
+			if (percent == 0.5) {
+				red = 255
+				green = 255
+			}
+			blue = 0
 
-				t = (Math.abs(percent - 1)) * Math.PI
-				x = Math.cos(t) * 100 + 100
-				y = Math.sin(t) * -100 + 100
+			return `rgb(${red},${green},${blue});`
+		}
 
+		function drawLine(temp, canvas) {
+			can = $(`#canvas${canvas}`)
+
+			if (canvas != 3) {
+				percent = 1 / 20 * temp - 0.5;
+			} else {
+				percent = 0.1 * temp + 0.5;
+				if (percent > 1) {
+					percent = 1
+				}
+				if (percent < 0) {
+					percent = 0
+				}
+			}
+
+			t = (Math.abs(percent - 1)) * Math.PI
+			x = Math.cos(t) * 100 + 100
+			y = Math.sin(t) * -100 + 100
+
+			if (canvas != 3){
 				if (percent > 0.5) {
 					poly = `<polygon points="0,0,200,0,${x},${y},100,100,0,100" style="fill: ${col(percent)}"></polygon>`
-					
+
 				} else {
 					poly = `<polygon points="0,0,${x},${y},100,100,0,100" style="fill: ${col(percent)}"></polygon>`
 				}
+			} else {
+				if (percent > 0.5) {
+					poly = `<polygon points="200,0,100,0,100,100,${x},${y}" style="fill: ${col(percent)}"></polygon>`
 
-				circle1 = '<circle cx="100" cy="100" r="125" style="stroke:#2a2a2a;stroke-width:50;" fill="transparent"/>'
-				circle2 = '<circle cx="100" cy="100" r="25" style="stroke:#2a2a2a;stroke-width:75;" fill="transparent"/>'
-				text = `<text x="100" y="90" style="font-family: Helvetica; font-size: 25pt; text-anchor: middle; font-weight: bold;" fill="white">${temp}</text>`
-				poly2 = '<rect x=0 y=99 width=200 height=2 fill="#2a2a2a"/>'
-				poly3 = '<rect x=75 y=80 width=50 height=25 fill="#2a2a2a"/>'
-
-				can.html(poly.concat(circle1,circle2,poly2,poly3,text))
-				can.css({'background':'white'});
-
-			};
-		
-			$(document).ready(function(){
-
-				setInterval(() => {
-					$.ajax({
-                        url: "https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",
-                        cache: false, 
-                        complete: function(data){
-                            drawLine((data["responseJSON"]['main']["temp"] - 273.15).toFixed(1),1)
-                        }
-                    })
-					
-					$.ajax({
-                        url: "https://gastralgic-wildebeest-0107.dataplicity.io/",
-                        cache: false, 
-                        complete: function(data){
-                            drawLine(data['responseJSON']["celsius"].toFixed(1),2)
-                        }
-                    })
-
-                    if($('#canvas1 text').text() != "" && $('#canvas2 text').text() != ""){
-                        temp1 = $('#canvas1 text').text()
-                        temp2 = $('#canvas2 text').text()
-                        dtemp = (temp1 - temp2).toFixed(1)
-                        drawLine(dtemp,3)
-                    }
-
-				}, 5000);
-
-			});
-		</script>
-		<style>
-			body{
-				background-color: #101214;
-			}
-
-			html,body,div{
-			    min-height: 95%;
-				height: 99%;
-				overflow: hidden;
-			}
-			
-			svg{
-				display:block;
-				margin: 10px;
-                border: 50px solid #2a2a2a; background: #2a2a2a;
-			}
-
-			.maincont{
-				display:flex;
-				justify-content:center;
-				align-items:center;
-				vertical-align: middle;
-			}
-
-			@media only screen and (max-width: 1000px) {
-				svg{
-					display: block;
-					width: 75%;
-					margin: auto;
-					margin-top: 10px;
-                    border: 25px solid #2a2a2a; 
-				}
-
-				.maincont{
-					display: block;
+				} else {
+					poly = `<polygon points="0,0,100,0,100,100,${x},${y}" style="fill: ${col(percent)}"></polygon>`
 				}
 			}
-		</style>
-	</head>
-	<body>
-		<div height="100%">
-			<!--<table>
+
+			circle1 = '<circle cx="100" cy="100" r="125" style="stroke:#2a2a2a;stroke-width:50;" fill="transparent"/>'
+			circle2 = '<circle cx="100" cy="100" r="25" style="stroke:#2a2a2a;stroke-width:75;" fill="transparent"/>'
+			text = `<text x="100" y="90" style="font-family: Helvetica; font-size: 25pt; text-anchor: middle; font-weight: bold;" fill="white">${temp}</text>`
+			poly2 = '<rect x=0 y=99 width=200 height=2 fill="#2a2a2a"/>'
+			poly3 = '<rect x=75 y=80 width=50 height=25 fill="#2a2a2a"/>'
+
+			can.html(poly.concat(circle1, circle2, poly2, poly3, text))
+			can.css({ 'background': 'white' });
+
+		};
+
+		$(document).ready(function () {
+
+			setInterval(() => {
+				$.ajax({
+					url: "https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",
+					cache: false,
+					complete: function (data) {
+						drawLine((data["responseJSON"]['main']["temp"] - 273.15).toFixed(1), 1)
+					}
+				})
+
+				$.ajax({
+					url: "https://gastralgic-wildebeest-0107.dataplicity.io/",
+					cache: false,
+					complete: function (data) {
+						drawLine(data['responseJSON']["celsius"].toFixed(1), 2)
+					}
+				})
+
+				if ($('#canvas1 text').text() != "" && $('#canvas2 text').text() != "") {
+					temp1 = $('#canvas1 text').text()
+					temp2 = $('#canvas2 text').text()
+					dtemp = (temp1 - temp2).toFixed(1)
+					drawLine(dtemp, 3)
+				}
+
+			}, 5000);
+
+		});
+	</script>
+	<style>
+		body {
+			background-color: #101214;
+		}
+
+		html,
+		body,
+		div {
+			min-height: 95%;
+			height: 99%;
+			overflow: hidden;
+		}
+
+		svg {
+			display: block;
+			margin: 10px;
+			border: 50px solid #2a2a2a;
+			background: #2a2a2a;
+		}
+
+		.maincont {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			vertical-align: middle;
+		}
+
+		@media only screen and (max-width: 1000px) {
+			svg {
+				display: block;
+				width: 75%;
+				margin: auto;
+				margin-top: 10px;
+				border: 25px solid #2a2a2a;
+			}
+
+			.maincont {
+				display: block;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div height="100%">
+		<!--<table>
 				<tr><td><svg id="canvas1" viewBox="0 0 200 100" width='40%'><text></text></svg></td></tr>
 				<tr><td><svg id="canvas2" viewBox="0 0 200 100" width='40%'><text></text></svg></td></tr>
 				<tr><td><svg id="canvas3" viewBox="0 0 200 100" width='40%'></svg></td></tr>
 			</table>-->
-			<div class="maincont">
-				<svg id="canvas1" viewBox="0 0 200 100" width='40%'><text></text></svg>
-				<svg id="canvas2" viewBox="0 0 200 100" width='40%'><text></text></svg>
-				<svg id="canvas3" viewBox="0 0 200 100" width='40%'></svg>
-			</div>
+		<div class="maincont">
+			<svg id="canvas1" viewBox="0 0 200 100" width='40%'><text></text></svg>
+			<svg id="canvas2" viewBox="0 0 200 100" width='40%'><text></text></svg>
+			<svg id="canvas3" viewBox="0 0 200 100" width='40%'></svg>
 		</div>
-	</body>
+	</div>
+</body>
+
 </html>

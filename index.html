@@ -3,26 +3,37 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Temperature v13</title>
+		<title>Temperature v14</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
 		<script>
 			function drawLine(temp,canvas){
 				can = $(`#canvas${canvas}`)
 
-				percent = 1 / 20 * temp - 0.5;
+                if(canvas != 3){
+				    percent = 1 / 20 * temp - 0.5;
+                }else{
+                    percent = 0.1 * temp + 0.5;
+                    if(percent > 1){
+                        percent = 1
+                    }
+                    if(percent < 0){
+                        percent = 0
+                    }
+                }
 
 				t = (Math.abs(percent - 1)) * Math.PI
 				x = Math.cos(t) * 100 + 100
 				y = Math.sin(t) * -100 + 100
+		
+                red = percent * 255
+                green = percent * -255 + 255
 
-				//line = `<line x1='100' y1='100' x2='${x}' y2='${y}' style="stroke:black;stroke-width:2" ></line>`
-				
 				if (percent > 0.5) {
-					poly = `<polygon points="0,0,200,0,${x},${y},100,100,0,100" style="fill: red;"></polygon>`
+					poly = `<polygon points="0,0,200,0,${x},${y},100,100,0,100" style="fill: rgb(${red},${green},0);"></polygon>`
 					
 				} else {
-					poly = `<polygon points="0,0,${x},${y},100,100,0,100" style="fill: red;"></polygon>`
+					poly = `<polygon points="0,0,${x},${y},100,100,0,100" style="fill: rgb(${red},${green},0);"></polygon>`
 				}
 
 				circle1 = '<circle cx="100" cy="100" r="125" style="stroke:#2a2a2a;stroke-width:50;" fill="transparent"/>'
@@ -39,11 +50,29 @@
 			$(document).ready(function(){
 
 				setInterval(() => {
-					outsideTemp = $.ajax({url:"https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",async:false,cache:false})["responseJSON"]['main']["temp"] - 273.15
-					drawLine(outsideTemp.toFixed(1),1)
+					$.ajax({
+                        url: "https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",
+                        cache: false, 
+                        complete: function(data){
+                            drawLine((data["responseJSON"]['main']["temp"] - 273.15).toFixed(1),1)
+                        }
+                    })
 					
-					roomTemp = $.ajax({ url: "https://gastralgic-wildebeest-0107.dataplicity.io/", async: false, cache: false })["responseJSON"]["celsius"]
-					drawLine(roomTemp.toFixed(1),2)
+					$.ajax({
+                        url: "https://gastralgic-wildebeest-0107.dataplicity.io/",
+                        cache: false, 
+                        complete: function(data){
+                            drawLine(data['responseJSON']["celsius"].toFixed(1),2)
+                        }
+                    })
+
+                    if($('#canvas1 text').text() != "" && $('#canvas2 text').text() != ""){
+                        temp1 = $('#canvas1 text').text()
+                        temp2 = $('#canvas2 text').text()
+                        dtemp = (temp1 - temp2).toFixed(1)
+                        drawLine(dtemp,3)
+                    }
+
 				}, 5000);
 
 			});
@@ -62,6 +91,7 @@
 			svg{
 				display:block;
 				margin: 10px;
+                border: 50px solid #2a2a2a; background: #2a2a2a;
 			}
 
 			.maincont{
@@ -75,7 +105,8 @@
 				svg{
 					display: inline-block;
 					width: 80%;
-					margin-top: 100px;
+					margin-top: 25px;
+                    border: 25px solid #2a2a2a; 
 				}
 
 				.maincont{
@@ -87,8 +118,9 @@
 	<body>
 		<div height="100%">
 			<div class="maincont">
-				<svg id="canvas1" viewBox="0 0 200 100" width='40%' style='border: 25px solid #2a2a2a; background: #2a2a2a;'></svg>
-				<svg id="canvas2" viewBox="0 0 200 100" width='40%' style='border: 25px solid #2a2a2a; background: #2a2a2a;'></svg>
+				<svg id="canvas1" viewBox="0 0 200 100" width='40%'><text></text></svg>
+				<svg id="canvas2" viewBox="0 0 200 100" width='40%'><text></text></svg>
+				<svg id="canvas3" viewBox="0 0 200 100" width='40%'></svg>
 			</div>
 		</div>
 	</body>

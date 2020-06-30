@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Temperature v16</title>
+		<title>Temperature v17</title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
 		<script>
@@ -103,8 +103,9 @@
 
 			@media only screen and (max-width: 1000px) {
 				svg{
-					display: inline-block;
+					display: block;
 					width: 75%;
+					margin: auto;
 					margin-top: 10px;
                     border: 25px solid #2a2a2a; 
 				}
@@ -117,6 +118,11 @@
 	</head>
 	<body>
 		<div height="100%">
+			<!--<table>
+				<tr><td><svg id="canvas1" viewBox="0 0 200 100" width='40%'><text></text></svg></td></tr>
+				<tr><td><svg id="canvas2" viewBox="0 0 200 100" width='40%'><text></text></svg></td></tr>
+				<tr><td><svg id="canvas3" viewBox="0 0 200 100" width='40%'></svg></td></tr>
+			</table>-->
 			<div class="maincont">
 				<svg id="canvas1" viewBox="0 0 200 100" width='40%'><text></text></svg>
 				<svg id="canvas2" viewBox="0 0 200 100" width='40%'><text></text></svg>

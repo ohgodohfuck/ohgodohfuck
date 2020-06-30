@@ -3,10 +3,29 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Temperature v17</title>
+		<title>Temperature v18/title>
 		<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
 			crossorigin="anonymous"></script>
 		<script>
+			function col(percent) {
+                if(percent > 0.5){
+                    red = 255
+                    green = percent * -510 + 510
+                }
+                if(percent < 0.5){
+                    red = Math.abs(percent - 1) * -510 + 510
+                    green = 255
+                    
+                }
+                if(percent == 0.5){
+                    red = 255
+                    green = 255
+                }
+                blue = 0
+    
+                return `rgb(${red},${green},${blue});`
+            }
+
 			function drawLine(temp,canvas){
 				can = $(`#canvas${canvas}`)
 
@@ -25,15 +44,12 @@
 				t = (Math.abs(percent - 1)) * Math.PI
 				x = Math.cos(t) * 100 + 100
 				y = Math.sin(t) * -100 + 100
-		
-                red = percent * 255
-                green = percent * -255 + 255
 
 				if (percent > 0.5) {
-					poly = `<polygon points="0,0,200,0,${x},${y},100,100,0,100" style="fill: rgb(${red},${green},0);"></polygon>`
+					poly = `<polygon points="0,0,200,0,${x},${y},100,100,0,100" style="fill: ${col(percent)}"></polygon>`
 					
 				} else {
-					poly = `<polygon points="0,0,${x},${y},100,100,0,100" style="fill: rgb(${red},${green},0);"></polygon>`
+					poly = `<polygon points="0,0,${x},${y},100,100,0,100" style="fill: ${col(percent)}"></polygon>`
 				}
 
 				circle1 = '<circle cx="100" cy="100" r="125" style="stroke:#2a2a2a;stroke-width:50;" fill="transparent"/>'

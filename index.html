@@ -77,7 +77,7 @@
 
 			setInterval(() => {
 				$.ajax({
-					url: "https://api.openweathermap.org/data/2.5/weather?q=Dongen&appid=769e44c3a39cca083f7578744c3508fe",
+					url: "https://api.openweathermap.org/data/2.5/weather?q=Groningen&appid=769e44c3a39cca083f7578744c3508fe",
 					cache: false,
 					complete: function (data) {
 						drawLine((data["responseJSON"]['main']["temp"] - 273.15).toFixed(1), 1)
